@@ -1,0 +1,59 @@
+1.If 7TB is the available disk space per node (9 disks with 1 TB, 2 disk for operating system etc.
+were excluded.). Assuming initial data size is 600 TB. How will you estimate the number of data
+nodes (n)?
+
+
+The formula used to calculate the number of data nodes is given below :
+ 
+n= H/d = c*r*S/(1-i)*d 
+
+H=c*r*s   and d=(1-i)*d
+
+where
+
+-H=Hadoop storage 
+
+-c = average compression ratio
+   Compression ratio refers to type of compression used.If not  take c=1;
+
+-r=Replication factor
+     Replication factor is usually 3 in production cluster.
+
+-s=size of the data which is needed to be moved to hadoop
+         It can be a combination of historical data and incremental data.
+         The incremental data can be projected over a period of time (Take for example 3years) 
+
+-i=Intermediate factor
+     Intermediate factor is usually  1/3 or 1/4
+
+-d= disk space availability per node
+
+
+Given:
+  H=600TB   d=7TB
+Solution:
+n=H/d
+  =600/7
+  =85.7
+ 
+Hence,the number of required  data nodes is 85.
+
+
+
+2.Imagine that you are uploading a file of 500MB into HDFS.100MB of data is successfully
+uploaded into HDFS and another client wants to read the uploaded data while the upload is still in
+progress. What will happen in such a scenario, will the 100 MB of data that is uploaded will it be displayed?
+
+Answer:
+
+ * The default block size in Hadoop 1x is 64 MB and the default block size in hadoop 2x is 128 MB . 
+*Let us assume  the block size  to be 100 MB . Then we will have 5 blocks which is replicated 3 times. 
+
+ * We will have 5 blocks for a file , client , name node and data node .
+ The first block will be used by the client and it  will approach  the name node in order to find the data node location
+ for storing  this block . 
+
+ * When the client becomes aware of datanode information it will seek the data node and starts copying the first block . 
+  Now , the client will get the confirmation on first block and it will start  initiating the same process for the second block . 
+
+ * So, The reader will be able to read the 100 MB  data which is uploaded while the remaining upload is in progress .  
